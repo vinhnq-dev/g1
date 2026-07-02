@@ -1,0 +1,61 @@
+// Dữ liệu cột mốc mặc định của hành trình.
+// frac: vị trí trên con đường (0 = điểm xuất phát, 1 = đích).
+// images: danh sách ảnh (dataURL do người dùng tải lên, hoặc đường dẫn tới file trong public/).
+// audio: file nhạc tải lên (dataURL). audioUrl: link YouTube hoặc link mp3 trực tiếp.
+export const DEFAULT_MILESTONES = [
+  {
+    id: 'm1',
+    frac: 0.1,
+    icon: '🎓',
+    year: '2018',
+    title: 'Tốt nghiệp',
+    desc: 'Tốt nghiệp đại học, khởi đầu cho cả hành trình phía trước.',
+    images: [],
+    audio: null,
+    audioUrl: null,
+  },
+  {
+    id: 'm2',
+    frac: 0.3,
+    icon: '💼',
+    year: '2019',
+    title: 'Công việc đầu tiên',
+    desc: 'Gia nhập công ty đầu tiên với vị trí lập trình viên.',
+    images: [],
+    audio: null,
+    audioUrl: null,
+  },
+  {
+    id: 'm3',
+    frac: 0.5,
+    icon: '🚀',
+    year: '2021',
+    title: 'Dự án lớn đầu tiên',
+    desc: 'Đảm nhận dự án quan trọng và học được rất nhiều điều mới.',
+    images: [],
+    audio: null,
+    audioUrl: null,
+  },
+  {
+    id: 'm4',
+    frac: 0.7,
+    icon: '🏆',
+    year: '2023',
+    title: 'Thăng tiến',
+    desc: 'Nỗ lực được ghi nhận, bước lên một vị trí mới.',
+    images: [],
+    audio: null,
+    audioUrl: null,
+  },
+  {
+    id: 'm5',
+    frac: 0.9,
+    icon: '🌟',
+    year: '2026',
+    title: 'Hiện tại',
+    desc: 'Tiếp tục tiến về phía trước, chinh phục những cột mốc mới.',
+    images: [],
+    audio: null,
+    audioUrl: null,
+  },
+];
