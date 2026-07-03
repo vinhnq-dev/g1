@@ -1,21 +1,33 @@
 import { useEffect, useState } from 'react';
+import { parseYouTubeId, stopMusic } from '../audio';
 
 // Thẻ thông tin hiện ra khi xe dừng tại một cột mốc.
-// Ảnh hiển thị từng tấm một, chuyển qua lại bằng hai mũi tên ‹ ›; bấm vào ảnh để phóng to.
+// Ảnh và video hiển thị chung một carousel, từng mục một, chuyển bằng hai mũi tên ‹ ›.
+// Bấm vào ảnh để phóng to; video là link YouTube (iframe) hoặc link mp4 (<video>).
 export default function MilestonePopup({ milestone, isLast, onClose, onEdit, onContinue }) {
   const [idx, setIdx] = useState(0);
   const [lightbox, setLightbox] = useState(false);
 
-  // Sang cột mốc khác → quay về ảnh đầu tiên.
+  // Sang cột mốc khác → quay về mục đầu tiên.
   useEffect(() => {
     setIdx(0);
     setLightbox(false);
   }, [milestone.id]);
 
-  const imgs = milestone.images;
-  const many = imgs.length > 1;
-  const prevImg = () => setIdx((i) => (i - 1 + imgs.length) % imgs.length);
-  const nextImg = () => setIdx((i) => (i + 1) % imgs.length);
+  // Ảnh trước, video sau — mỗi mục có type để biết cách hiển thị.
+  const media = [
+    ...milestone.images.map((src) => ({ type: 'image', src })),
+    ...(milestone.videoUrls || []).map((url) => ({ type: 'video', url })),
+  ];
+  const many = media.length > 1;
+  const item = media[idx];
+  const prevItem = () => setIdx((i) => (i - 1 + media.length) % media.length);
+  const nextItem = () => setIdx((i) => (i + 1) % media.length);
+
+  // Lướt tới mục video → tắt nhạc nền của cột mốc để không chồng tiếng.
+  useEffect(() => {
+    if (item?.type === 'video') stopMusic();
+  }, [item?.type]);
 
   return (
     <>
@@ -28,27 +40,31 @@ export default function MilestonePopup({ milestone, isLast, onClose, onEdit, onC
         <h2 className="popup-title">{milestone.title}</h2>
         <p className="popup-desc">{milestone.desc}</p>
 
-        {imgs.length > 0 && (
+        {media.length > 0 && (
           <div className="carousel">
             {many && (
-              <button className="carousel-btn" onClick={prevImg} aria-label="Ảnh trước">
+              <button className="carousel-btn" onClick={prevItem} aria-label="Mục trước">
                 ‹
               </button>
             )}
             <div className="carousel-frame">
-              <img
-                src={imgs[idx]}
-                alt={`${milestone.title} - ảnh ${idx + 1}`}
-                onClick={() => setLightbox(true)}
-              />
+              {item.type === 'image' ? (
+                <img
+                  src={item.src}
+                  alt={`${milestone.title} - ảnh ${idx + 1}`}
+                  onClick={() => setLightbox(true)}
+                />
+              ) : (
+                <CarouselVideo url={item.url} />
+              )}
               {many && (
                 <span className="carousel-count">
-                  {idx + 1}/{imgs.length}
+                  {idx + 1}/{media.length}
                 </span>
               )}
             </div>
             {many && (
-              <button className="carousel-btn" onClick={nextImg} aria-label="Ảnh sau">
+              <button className="carousel-btn" onClick={nextItem} aria-label="Mục sau">
                 ›
               </button>
             )}
@@ -65,11 +81,28 @@ export default function MilestonePopup({ milestone, isLast, onClose, onEdit, onC
         </div>
       </div>
 
-      {lightbox && (
+      {lightbox && item?.type === 'image' && (
         <div className="lightbox" onClick={() => setLightbox(false)}>
-          <img src={imgs[idx]} alt="Ảnh phóng to" />
+          <img src={item.src} alt="Ảnh phóng to" />
         </div>
       )}
     </>
   );
+}
+
+// Một mục video trong carousel: link YouTube → iframe nhúng, link khác → thẻ <video>.
+function CarouselVideo({ url }) {
+  const ytId = parseYouTubeId(url);
+  if (ytId) {
+    return (
+      <iframe
+        className="carousel-video"
+        src={`https://www.youtube.com/embed/${ytId}`}
+        title="Video cột mốc"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen
+      />
+    );
+  }
+  return <video className="carousel-video" src={url} controls playsInline onPlay={stopMusic} />;
 }

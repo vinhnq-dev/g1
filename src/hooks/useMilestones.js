@@ -16,10 +16,14 @@ const readLocalOverrides = () => {
   }
 };
 
-// Đưa dữ liệu cũ (image đơn) về dạng mới (mảng images).
+// Đưa dữ liệu cũ về dạng mới: image đơn → mảng images, thêm videoUrls nếu thiếu.
 const normalize = (m) => {
   const { image, ...rest } = m;
-  return { ...rest, images: m.images ?? (image ? [image] : []) };
+  return {
+    ...rest,
+    images: m.images ?? (image ? [image] : []),
+    videoUrls: m.videoUrls ?? [],
+  };
 };
 
 const mergeById = (base, overridesById) =>

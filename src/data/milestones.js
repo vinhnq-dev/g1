@@ -1,6 +1,8 @@
 // Dữ liệu cột mốc mặc định của hành trình.
 // frac: vị trí trên con đường (0 = điểm xuất phát, 1 = đích).
 // images: danh sách ảnh (dataURL do người dùng tải lên, hoặc đường dẫn tới file trong public/).
+// videoUrls: danh sách link video (YouTube hoặc link mp4 trực tiếp) — chỉ nhận link,
+//   không upload file video để journey.json/localStorage không bị phình to.
 // audio: file nhạc tải lên (dataURL). audioUrl: link YouTube hoặc link mp3 trực tiếp.
 export const DEFAULT_MILESTONES = [
   {
@@ -11,6 +13,7 @@ export const DEFAULT_MILESTONES = [
     title: 'Tốt nghiệp',
     desc: 'Tốt nghiệp đại học, khởi đầu cho cả hành trình phía trước.',
     images: [],
+    videoUrls: [],
     audio: null,
     audioUrl: null,
   },
@@ -22,6 +25,7 @@ export const DEFAULT_MILESTONES = [
     title: 'Công việc đầu tiên',
     desc: 'Gia nhập công ty đầu tiên với vị trí lập trình viên.',
     images: [],
+    videoUrls: [],
     audio: null,
     audioUrl: null,
   },
@@ -33,6 +37,7 @@ export const DEFAULT_MILESTONES = [
     title: 'Dự án lớn đầu tiên',
     desc: 'Đảm nhận dự án quan trọng và học được rất nhiều điều mới.',
     images: [],
+    videoUrls: [],
     audio: null,
     audioUrl: null,
   },
@@ -44,6 +49,7 @@ export const DEFAULT_MILESTONES = [
     title: 'Thăng tiến',
     desc: 'Nỗ lực được ghi nhận, bước lên một vị trí mới.',
     images: [],
+    videoUrls: [],
     audio: null,
     audioUrl: null,
   },
@@ -55,6 +61,7 @@ export const DEFAULT_MILESTONES = [
     title: 'Hiện tại',
     desc: 'Tiếp tục tiến về phía trước, chinh phục những cột mốc mới.',
     images: [],
+    videoUrls: [],
     audio: null,
     audioUrl: null,
   },
