@@ -13,7 +13,7 @@ body {
 }
 
 .app {
-  max-width: 1100px;
+  max-width: 1500px;
   margin: 0 auto;
   padding: 24px 16px 40px;
   display: flex;
@@ -59,7 +59,7 @@ body {
 }
 
 .canvas-wrap {
-  height: min(68vh, 620px);
+  height: min(84vh, 960px);
   min-height: 420px;
   border-radius: 18px;
   overflow: hidden;
@@ -103,6 +103,15 @@ body {
 .btn-small {
   padding: 7px 13px;
   font-size: 0.85rem;
+}
+
+/* Nút mũi tên < > chuyển cột mốc */
+.btn-arrow {
+  width: 44px;
+  padding: 10px 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-align: center;
 }
 
 /* ===== Thanh điều khiển ===== */
@@ -220,26 +229,68 @@ body {
   line-height: 1.5;
 }
 
-.popup-gallery {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+/* Trình chiếu ảnh trong popup: một ảnh + hai mũi tên ‹ › */
+.carousel {
+  display: flex;
+  align-items: center;
   gap: 8px;
   margin-top: 12px;
-  max-height: 200px;
-  overflow-y: auto;
 }
 
-.popup-gallery img {
+.carousel-frame {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.carousel-frame img {
   width: 100%;
-  aspect-ratio: 4 / 3;
+  max-height: 180px;
   object-fit: cover;
   border-radius: 10px;
   cursor: zoom-in;
-  transition: transform 0.12s ease;
+  display: block;
 }
 
-.popup-gallery img:hover {
-  transform: scale(1.04);
+/* Video trong carousel: iframe YouTube hoặc thẻ <video> cho link mp4 */
+.carousel-video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 180px;
+  border: none;
+  border-radius: 10px;
+  background: #000;
+  display: block;
+}
+
+.carousel-count {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  background: rgba(20, 30, 40, 0.65);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+}
+
+.carousel-btn {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: #f1f5f8;
+  color: #2f3b46;
+  font-size: 1.3rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.carousel-btn:hover {
+  background: #dfe9f0;
 }
 
 /* Xem ảnh phóng to */
@@ -409,6 +460,54 @@ body {
   font-size: 0.7rem;
   cursor: pointer;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+/* Khu vực video trong modal chỉnh sửa: ô dán link + danh sách link đã thêm */
+.video-add {
+  display: flex;
+  gap: 8px;
+}
+
+.video-add input {
+  flex: 1;
+  min-width: 0;
+}
+
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.video-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f1f5f8;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 0.84rem;
+  color: #2f3b46;
+}
+
+.video-row span {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.video-remove {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: #e63946;
+  color: #fff;
+  font-size: 0.7rem;
+  cursor: pointer;
 }
 
 .modal-note {

@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { playMilestoneAudio, stopMusic, unlockAudio } from '../audio';
+import { parseYouTubeId, playMilestoneAudio, stopMusic, unlockAudio } from '../audio';
 import { compressImage } from '../utils/image';
 
 const PRESET_ICONS = ['🎓', '💼', '🚀', '🏆', '🌟', '❤️', '💍', '🏠', '👶', '✈️', '🎯', '🥇'];
 
 const MAX_IMAGES = 8;
+const MAX_VIDEOS = 4; // video chỉ nhận link (YouTube/mp4) nên không tốn dung lượng, giới hạn cho gọn
 const MAX_AUDIO_MB = 2.5; // giới hạn file nhạc tải lên để còn lưu được trong trình duyệt
 
-// Hộp thoại chỉnh sửa một cột mốc: icon, năm, tiêu đề, mô tả, bộ ảnh và nhạc.
+// Hộp thoại chỉnh sửa một cột mốc: icon, năm, tiêu đề, mô tả, bộ ảnh, video và nhạc.
 export default function EditModal({ milestone, onSave, onClose }) {
   const [form, setForm] = useState({
     icon: milestone.icon,
@@ -15,9 +16,11 @@ export default function EditModal({ milestone, onSave, onClose }) {
     title: milestone.title,
     desc: milestone.desc,
     images: milestone.images,
+    videoUrls: milestone.videoUrls || [],
     audio: milestone.audio,
     audioUrl: milestone.audioUrl || '',
   });
+  const [videoInput, setVideoInput] = useState('');
   const [busy, setBusy] = useState(false);
 
   const set = (key, value) => setForm((f) => ({ ...f, [key]: value }));
@@ -42,6 +45,24 @@ export default function EditModal({ milestone, onSave, onClose }) {
 
   const removeImage = (index) =>
     setForm((f) => ({ ...f, images: f.images.filter((_, i) => i !== index) }));
+
+  const addVideo = () => {
+    const url = videoInput.trim();
+    if (!url) return;
+    if (!/^https?:\/\//i.test(url)) {
+      alert('Link video phải bắt đầu bằng http:// hoặc https://');
+      return;
+    }
+    if (form.videoUrls.length >= MAX_VIDEOS) {
+      alert(`Mỗi cột mốc tối đa ${MAX_VIDEOS} video.`);
+      return;
+    }
+    setForm((f) => ({ ...f, videoUrls: [...f.videoUrls, url] }));
+    setVideoInput('');
+  };
+
+  const removeVideo = (index) =>
+    setForm((f) => ({ ...f, videoUrls: f.videoUrls.filter((_, i) => i !== index) }));
 
   const readAudioFile = (file) => {
     if (!file) return;
@@ -136,6 +157,49 @@ export default function EditModal({ milestone, onSave, onClose }) {
                   className="thumb-remove"
                   onClick={() => removeImage(i)}
                   aria-label={`Xóa ảnh ${i + 1}`}
+                >
+                  ✕
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <label className="field">
+          <span>
+            Video ({form.videoUrls.length}/{MAX_VIDEOS}) — dán link YouTube hoặc link mp4, hiện
+            chung carousel với ảnh
+          </span>
+          <div className="video-add">
+            <input
+              placeholder="https://www.youtube.com/watch?v=... hoặc https://.../video.mp4"
+              value={videoInput}
+              onChange={(e) => setVideoInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  addVideo();
+                }
+              }}
+            />
+            <button type="button" className="btn btn-small" onClick={addVideo}>
+              ➕ Thêm
+            </button>
+          </div>
+        </label>
+        {form.videoUrls.length > 0 && (
+          <div className="video-list">
+            {form.videoUrls.map((url, i) => (
+              <div key={i} className="video-row">
+                <span title={url}>
+                  {parseYouTubeId(url) ? '▶ YouTube · ' : '🎬 '}
+                  {url}
+                </span>
+                <button
+                  type="button"
+                  className="video-remove"
+                  onClick={() => removeVideo(i)}
+                  aria-label={`Xóa video ${i + 1}`}
                 >
                   ✕
                 </button>
